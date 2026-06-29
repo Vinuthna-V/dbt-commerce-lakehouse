@@ -1,0 +1,9 @@
+version: 2
+sources:
+  - name: ecom_raw
+    database: commerce_lakehouse
+    schema: raw_data
+    tables:
+      - name: raw_orders
+      - name: raw_order_items
+    

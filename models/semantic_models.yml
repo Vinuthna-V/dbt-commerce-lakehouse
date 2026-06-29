@@ -1,0 +1,42 @@
+version: 2
+
+semantic_models:
+  - name: semantic_orders
+    model: ref('fct_orders')
+    
+    # Explicitly set the default time column for this model's measures
+    defaults:
+      agg_time_dimension: ordered_at
+
+    entities:
+      - name: order
+        type: primary
+        expr: order_id
+
+    dimensions:
+      - name: order_status
+        type: categorical
+      - name: ordered_at
+        type: time
+        type_params:
+          time_granularity: day
+
+    measures:
+      - name: order_revenue
+        description: "The total gross revenue generated from ecommerce orders."
+        expr: total_revenue_usd
+        agg: sum
+
+# Dedicated block for time spines to clear the validation error
+time_spines:
+  - name: metricflow_time_spine
+    model: ref('metricflow_time_spine')
+    primary_column: date_day
+
+metrics:
+  - name: total_revenue
+    label: Total Revenue
+    description: "Sum of total revenue from all orders."
+    type: simple
+    type_params:
+      measure: order_revenue
